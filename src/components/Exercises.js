@@ -14,8 +14,10 @@ const Exercises = ({exercises, setExercises, bodyPart}) => {
     const indexOfLastExercise = currentPage * exercisesPerPage;
     const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
 
-    const currentExercises = exercises.slice(indexOfFirstExercise, indexOfLastExercise)
-    
+    console.log('-----', exercises)
+
+    const currentExercises = exercises.length <= 0 ? [] : exercises.slice(indexOfFirstExercise, indexOfLastExercise)
+
     const paginate = (e, value) => {
         setCurrentPage(value)
 
@@ -25,12 +27,12 @@ const Exercises = ({exercises, setExercises, bodyPart}) => {
     useEffect(() => {
         const fetchExercisesData = async () => {
             let exercisesData = []
-
+            console.log(bodyPart)
             if(bodyPart === 'all') {
                 exercisesData = await fetchData('https://exercisedb.p.rapidapi.com/exercises?limit=0', exerciseOptions);
             } else {
-                execisesData = await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=0`, exerciseOptions);
-
+                
+                exercisesData = await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=10&offset=0`, exerciseOptions);
             }
 
             setExercises(exercisesData)
@@ -59,7 +61,7 @@ const Exercises = ({exercises, setExercises, bodyPart}) => {
             flexWrap={'wrap'}
             justifyContent={'center'}
         >
-            {exercises.map((exercise, index) => (
+            {currentExercises.map((exercise, index) => (
                 <ExerciseCard 
                     key={index}
                     exercise={exercise}
